@@ -25,16 +25,19 @@ Se corrigieron dos problemas encontrados al validar: IDs de GitHub superiores a 
 
 En el checkout Git real sobre Windows, con Node 24.22.0 y npm 11.19.1:
 
-| Comprobación                                    | Resultado                                                                                                   |
-| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `npm ci`                                        | 599 paquetes instalados desde el lockfile; 0 vulnerabilidades reportadas.                                   |
-| Preparación local                               | Corregido y probado `local-env.mjs` para LF/CRLF; genera o repara `AUTH_SECRET` sin mostrarlo.              |
-| Generación Prisma WASM                          | Correcta y ejecutada también automáticamente mediante `prebuild`.                                           |
-| Lint y TypeScript                               | Correctos.                                                                                                  |
-| Pruebas unitarias                               | 28 pruebas en 4 archivos; todas pasan.                                                                      |
-| Build de producción                             | Correcto con Next.js 16.4.3 y raíz de Turbopack explícita.                                                  |
-| `deploy:check`                                  | Rechaza la configuración local y acepta una configuración de producción ficticia sin mostrar secretos.      |
-| Integración y E2E de los cambios de esta sesión | No ejecutadas localmente: no hay Docker, cliente ni servicio PostgreSQL. No se usó una base no garantizada. |
+| Comprobación            | Resultado                                                                                               |
+| ----------------------- | ------------------------------------------------------------------------------------------------------- |
+| `npm ci`                | 599 paquetes instalados desde el lockfile; 0 vulnerabilidades reportadas.                               |
+| Preparación local       | Corregido y probado `local-env.mjs` para LF/CRLF; genera o repara `AUTH_SECRET` sin mostrarlo.          |
+| Docker y PostgreSQL 17  | Docker Desktop 29.9.2 operativo; imagen fijada por digest y bases `reporadar`/`reporadar_test` activas. |
+| Migraciones Prisma WASM | Las tres migraciones se aplican desde cero en desarrollo y en la base aislada de pruebas.               |
+| Seed                    | Ejecutado dos veces; conserva tres oportunidades sin duplicarlas.                                       |
+| Lint y TypeScript       | Correctos.                                                                                              |
+| Pruebas unitarias       | 28 pruebas en 4 archivos; todas pasan.                                                                  |
+| Pruebas de integración  | 6 pruebas contra `reporadar_test`; todas pasan.                                                         |
+| Build de producción     | Correcto con Next.js 16.4.3 y raíz de Turbopack explícita.                                              |
+| Playwright              | 2 pruebas sobre servidor de producción y base aislada; ambas pasan.                                     |
+| `deploy:check`          | Rechaza la configuración local y acepta una configuración de producción ficticia sin mostrar secretos.  |
 
 La ejecución remota verde existente cubre `6f3d4d6`. Los commits locales posteriores no se han subido ni ejecutado en GitHub Actions.
 
