@@ -32,7 +32,7 @@ npm run db:seed
 npm run dev
 ```
 
-Los comandos se ejecutan en la raíz del repositorio. `local-env.mjs` crea `.env` con un secreto aleatorio y permisos restrictivos; conserva el archivo si ya existe. El seed es idempotente y crea un usuario de ejemplo sin acceso de sesión. Al entrar en demostración se crea un espacio nuevo; no se inicia sesión como el usuario del seed.
+Los comandos se ejecutan en la raíz del repositorio. `local-env.mjs` crea `.env` con un secreto aleatorio y permisos restrictivos; conserva los valores existentes y repara un `AUTH_SECRET` vacío. El seed es idempotente y crea un usuario de ejemplo sin acceso de sesión. Al entrar en demostración se crea un espacio nuevo; no se inicia sesión como el usuario del seed.
 
 `local-db.sh` usa el nombre reservado `reporadar-db`; no lo ejecutes si tienes un contenedor ajeno con ese nombre. No uses simultáneamente este script y Compose: ambos reservan el puerto local 5432. Con Compose, crea también la base de pruebas cuando la necesites: `docker compose exec db createdb -U reporadar reporadar_test` (solo si aún no existe).
 
