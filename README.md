@@ -59,7 +59,7 @@ La búsqueda pública no necesita tokens de usuario. No se guardan access tokens
 
 Crea tu propia GitHub OAuth App. Configura Home URL con el origen de la aplicación y callback `ORIGEN/api/auth/callback/github`. Para desarrollo el origen habitual es `http://localhost:3000`; usa otra OAuth App para producción. Configura el Client ID y el Client Secret de esa aplicación y reinicia el servidor.
 
-Solo solicitamos `read:user`. No pedimos acceso a repositorios privados ni permisos de escritura. El login usa JWT firmado/cifrado por la biblioteca y la identidad persistida se vincula por el ID de GitHub. Sin credenciales, el acceso muestra la configuración pendiente y permite la demostración. El login real debe comprobarse con una OAuth App propia; no está simulado como si hubiera sido verificado.
+Solo solicitamos `read:user`. No pedimos acceso a repositorios privados ni permisos de escritura. El login usa JWT firmado/cifrado por la biblioteca y la identidad persistida se vincula por el ID de GitHub. Sin credenciales, el acceso muestra la configuración pendiente y permite la demostración. El login real de producción se comprobó con la OAuth App configurada y está registrado en `docs/validation.md`; no se sustituye por una simulación.
 
 ## Prisma en este entorno
 

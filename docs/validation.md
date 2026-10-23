@@ -39,31 +39,32 @@ En el checkout Git real sobre Windows, con Node 24.22.0 y npm 11.19.1:
 | Playwright              | 2 pruebas sobre servidor de producción y base aislada; ambas pasan.                                     |
 | `deploy:check`          | Rechaza la configuración local y acepta una configuración de producción ficticia sin mostrar secretos.  |
 
-La revalidación se registró en `022efb0`; el workflow remoto `Checks` terminó correctamente en la ejecución `39990512472`.
+La entrega funcional se registró en `8081744`; el workflow remoto `Checks` terminó correctamente en la ejecución `40002464614`.
 
 ## Despliegue gestionado
 
 El mismo 23 de octubre se creó el proyecto de producción en Vercel y su PostgreSQL gestionado en Neon. No se imprimieron ni versionaron credenciales.
 
-| Comprobación                | Resultado                                                                                                                                   |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| Configuración de producción | `deploy:check` correcto con HTTPS, secreto independiente, OAuth completo y una base no local/no `_test`.                                    |
-| PostgreSQL gestionado       | Conexión agrupada para la aplicación y directa para administración; TLS activo.                                                             |
-| Migraciones                 | Las tres migraciones versionadas se aplicaron una vez; una segunda ejecución no encontró cambios.                                           |
-| Build y despliegue          | Despliegue Vercel `dpl_2Bzfg7bjmBNoyUg3QDTc5tc4u6QG` en estado `READY`.                                                                     |
-| Acceso público              | `/acceso` responde 200 sin autenticación de Vercel; los previews siguen protegidos.                                                         |
-| Salud                       | `/api/health` responde 200 desde producción.                                                                                                |
-| Interfaz                    | Título, encabezado y botón de GitHub presentes; sin errores de consola en la carga comprobada con Chromium.                                 |
-| Inicio OAuth                | GitHub recibe `read:user`, `state` y el callback canónico `https://reporadar-rubenpd66-6093s-projects.vercel.app/api/auth/callback/github`. |
-| Datos previos a OAuth       | Cero usuarios OAuth en Neon antes de la autorización real.                                                                                  |
-| Persistencia OAuth          | El esquema gestionado no contiene columnas cuyo nombre indique token, secreto o contraseña.                                                 |
-| TLS PostgreSQL              | La URL se normaliza a `sslmode=verify-full`; la conexión real a Neon responde y evita la advertencia de compatibilidad futura de `pg`.      |
-| Logs                        | Sin fallos de aplicación en la ventana disponible. La advertencia TLS detectada quedó cubierta por la normalización y pruebas anteriores.   |
+| Comprobación                | Resultado                                                                                                                                                    |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Configuración de producción | `deploy:check` correcto con HTTPS, secreto independiente, OAuth completo y una base no local/no `_test`.                                                     |
+| PostgreSQL gestionado       | Conexión agrupada para la aplicación y directa para administración; TLS activo.                                                                              |
+| Migraciones                 | Las tres migraciones versionadas se aplicaron una vez; una segunda ejecución no encontró cambios.                                                            |
+| Build y despliegue          | Despliegue Vercel `dpl_FM69d87eDcBfrbhQTBCLyVztCWGH` en estado `READY`.                                                                                      |
+| Acceso público              | `/acceso` responde 200 sin autenticación de Vercel; los previews siguen protegidos.                                                                          |
+| Salud                       | `/api/health` responde 200 desde producción.                                                                                                                 |
+| Interfaz                    | Título, encabezado y botón de GitHub presentes; sin errores de consola en la carga comprobada con Chromium.                                                  |
+| Inicio OAuth                | GitHub recibe `read:user`, `state` y el callback canónico `https://reporadar-rubenpd66-6093s-projects.vercel.app/api/auth/callback/github`.                  |
+| Datos previos a OAuth       | Cero usuarios OAuth en Neon antes de la autorización real.                                                                                                   |
+| OAuth real                  | Consentimiento completado y redirección a `/dashboard`; Neon contiene exactamente una identidad GitHub única, no marcada como demo.                          |
+| Persistencia OAuth          | El esquema gestionado no contiene columnas cuyo nombre indique token, secreto o contraseña.                                                                  |
+| TLS PostgreSQL              | La URL se normaliza a `sslmode=verify-full`; la conexión real a Neon responde y evita la advertencia de compatibilidad futura de `pg`.                       |
+| Logs                        | Sin fallos de aplicación. Node 24 emite `DEP0169` desde `openid-client` 5.7.1 durante el callback; es una advertencia transitiva y no se oculta globalmente. |
 
 ## Limitaciones y comprobaciones pendientes
 
-- Falta registrar el resultado final del consentimiento OAuth con una cuenta real y confirmar la creación de esa identidad en Neon. El inicio del flujo y el callback exacto sí están validados.
 - El motor nativo de Prisma no pudo descargarse por la política de red. La generación y las migraciones se verificaron con el motor WASM oficial distribuido por npm. La introspección adicional de esquema por WASM falló por deserialización del tipo interno `char`; no se utiliza como sustitución de las pruebas de persistencia. Los comandos nativos no se presentan como verificados en este entorno.
 - El adaptador WASM depende de APIs internas fijadas a las versiones del lockfile; revisar su compatibilidad al actualizar Prisma.
+- NextAuth 4 depende de `openid-client` 5.7.1, que usa la API heredada `url.parse()` y provoca la advertencia `DEP0169` en Node 24 al completar OAuth. El flujo funciona; revisar su eliminación al actualizar la pila de autenticación.
 - La caché, los presupuestos de GitHub y los límites de escritura/demo continúan por proceso. Antes de escalado horizontal deben existir límites compartidos o equivalentes en la plataforma; la caché pública puede permanecer como optimización local si se acepta perder aciertos entre instancias.
 - Neon proporciona la base gestionada, pero no se ha ensayado todavía una restauración en una base separada. El procedimiento de backup, restauración y reversión está documentado y sigue pendiente de simulacro.
