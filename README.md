@@ -83,7 +83,9 @@ Si Chromium está preinstalado: `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/ch
 
 Las pruebas de integración verifican persistencia, unicidad, cascadas, IDs de GitHub de más de 32 bits y aislamiento de dos usuarios en listas, cambios, borrados y tareas. Las unitarias simulan GitHub para comprobar caché, deduplicación, filtros, errores, timeout y límites. Las E2E recorren guardado, planificación, preferencias, persistencia tras recarga, otro navegador sin acceso y vista móvil. CI no depende de GitHub ni de OAuth externos.
 
-La integración real se comprueba aparte y no se sustituye silenciosamente por ejemplos. El workflow de GitHub Actions está preparado; su ejecución remota depende de subir los archivos al repositorio.
+La integración real se comprueba aparte y no se sustituye silenciosamente por ejemplos. El workflow de GitHub Actions está preparado y la ejecución remota del commit inicial está registrada en `docs/validation.md`.
+
+Antes de desplegar, inyecta las variables del entorno objetivo desde su gestor de secretos y ejecuta `npm run deploy:check`. El comando valida la URL PostgreSQL de producción, el origen HTTPS, el secreto y el par OAuth sin imprimir sus valores. Rechaza bases locales y nombres terminados en `_test`.
 
 ## Operación y despliegue
 
