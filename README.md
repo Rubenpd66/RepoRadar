@@ -93,6 +93,8 @@ Antes de desplegar, inyecta las variables del entorno objetivo desde su gestor d
 
 Consulta [operación y despliegue](docs/operations.md), [arquitectura](docs/architecture.md) y [validación](docs/validation.md).
 
+La producción pública está disponible en [reporadar-rubenpd66-6093s-projects.vercel.app](https://reporadar-rubenpd66-6093s-projects.vercel.app). Usa Vercel con Node 24 y PostgreSQL gestionado por Neon; la demo está desactivada en producción y los previews permanecen protegidos por autenticación de Vercel.
+
 En cloud, `bash scripts/cloud-install.sh` instala y prepara las bases locales; `bash scripts/cloud-start.sh` arranca el flujo de desarrollo. Los scripts no crean recursos externos ni despliegan. Los procesos deben reiniciarse en tareas futuras. Los volúmenes Docker no deben asumirse incluidos en snapshots de la plataforma: si hay que recrear la base local se reaplican migraciones. Para datos duraderos externos, usa una base gestionada con copias de seguridad.
 
 ## Aprender con RepoRadar
@@ -107,7 +109,7 @@ En cloud, `bash scripts/cloud-install.sh` instala y prepara las bases locales; `
 
 ## Límites actuales
 
-- OAuth real y despliegue requieren configuración externa; no hay publicación automática.
+- La publicación automática desde `main` está conectada a Vercel. Los cambios de esquema siguen requiriendo un paso de migración explícito con el endpoint directo de Neon; no se ejecutan dentro de builds paralelos.
 - Caché y presupuestos de solicitudes viven por proceso. Antes de escalar a varias réplicas, añade almacenamiento compartido y límites de acceso en la plataforma.
 - Los ejemplos son ficticios; no se abren repositorios ni se envían contribuciones en su nombre.
 - Las notas y los estados son privados y manuales. El estado consultado de una PR se muestra por separado.

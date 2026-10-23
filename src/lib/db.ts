@@ -1,15 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { z } from "zod";
+import { normalizeDatabaseUrl } from "@/lib/database-url";
 const globalDb = globalThis as unknown as { db?: PrismaClient };
 export function databaseUrl() {
-  return z
-    .url()
-    .refine(
-      (v) => /^postgres(ql)?:/.test(v),
-      "DATABASE_URL debe ser PostgreSQL",
-    )
-    .parse(process.env.DATABASE_URL);
+  return normalizeDatabaseUrl(process.env.DATABASE_URL);
 }
 export const db =
   globalDb.db ??

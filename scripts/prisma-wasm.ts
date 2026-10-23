@@ -10,6 +10,7 @@ const { getGenerators, loadSchemaContext } = internals;
 import { defaultRegistry } from "@prisma/client-generator-registry";
 import { bindMigrationAwareSqlAdapterFactory } from "@prisma/driver-adapter-utils";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { normalizeDatabaseUrl } from "../src/lib/database-url";
 const command = process.argv[2];
 if (command === "generate") {
   const generators = await getGenerators({
@@ -30,7 +31,7 @@ if (command === "generate") {
   });
   const adapter = bindMigrationAwareSqlAdapterFactory(
     new PrismaPg({
-      connectionString: process.env.DATABASE_URL,
+      connectionString: normalizeDatabaseUrl(process.env.DATABASE_URL),
       idleTimeoutMillis: 1000,
       allowExitOnIdle: true,
     }),
