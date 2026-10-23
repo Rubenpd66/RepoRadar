@@ -1,0 +1,63 @@
+generator client {
+ provider = "prisma-client-js"
+}
+datasource db {
+ provider = "postgresql"
+}
+enum Status {
+ PENDING
+ INVESTIGATING
+ IN_PROGRESS
+ PR_SENT
+ COMPLETED
+}
+model User {
+ id String @id @default(cuid())
+ githubId String? @unique
+ name String
+ demo Boolean @default(false)
+ createdAt DateTime @default(now())
+ preferences Preference?
+ saved SavedOpportunity[]
+}
+model Preference {
+ userId String @id
+ user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ languages String[] @default([])
+ technologies String[] @default([])
+ interests String[] @default([])
+}
+model SavedOpportunity {
+ id String @id @default(cuid())
+ userId String
+ user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ githubId BigInt
+ owner String
+ repo String
+ number Int
+ title String
+ url String
+ labels String[]
+ language String?
+ source String
+ snapshotAt DateTime @default(now())
+ status Status @default(PENDING)
+ notes String @default("")
+ prUrl String?
+ tasks Task[]
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@unique([userId, githubId, source])
+ @@index([userId, updatedAt])
+}
+model Task {
+ id String @id @default(cuid())
+ opportunityId String
+ opportunity SavedOpportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+ title String
+ position Int @default(0)
+ done Boolean @default(false)
+ createdAt DateTime @default(now())
+ @@index([opportunityId])
+ @@unique([opportunityId, position])
+}
